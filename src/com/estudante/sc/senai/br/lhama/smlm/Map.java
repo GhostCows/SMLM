@@ -1,6 +1,5 @@
 package com.estudante.sc.senai.br.lhama.smlm;
 
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 

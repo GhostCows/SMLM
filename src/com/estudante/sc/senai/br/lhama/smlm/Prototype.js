@@ -1,82 +1,189 @@
-var canv, c, x, y = x = 300, pw = 10, ph = 20, xv, yv = xv = 0, grav = .6, onG = !1, hLeft, hRight,
-    hDown = hRight = hLeft = !1, plat = [], w, h, xs = 4;
-ys = 10;
-fDown = !1;
-colors = [];
-dead = !1;
-window.onload = function () {
+let canv,
+    c,
+    x,
+    y = x = 300,
+    pw = 10,
+    ph = 20,
+    xv,
+    yv = xv = 0,
+    grav,
+    defG = grav = 1,
+    onG = false,
+    hLeft,
+    hRight,
+    hDown = hRight = hLeft = false,
+    plat = [],
+    w, h,
+    xs = 4;
+ys = 10,
+    fDown = false,
+    colors = [],
+    dead = false;
+window.onload = () => {
     canv = document.getElementById("gc");
     w = canv.width;
     h = canv.height;
     c = canv.getContext("2d");
-    setInterval(update, 1E3 / 30);
+    setInterval(update, 1000/30);
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
-    for (var b = 0; 30 > b; b++)plat[b] = {
-        x: 750 * Math.random(),
-        y: 550 * Math.random(),
-        w: 100 * Math.random() + 50,
-        h: 50 * Math.random() + 50,
-        t: Math.floor(3 * Math.random())
-    };
+    for (var i = 0; i < 30; i++) {
+        plat[i] = {
+            x: Math.random() * 750,
+            y: Math.random() * 550,
+            w: Math.random() * 100 + 50,
+            h: Math.random() * 50 + 50,
+            t: Math.floor(Math.random() * 3)
+        }
+    }
     colors[0] = "white";
     colors[1] = "lime";
-    colors[2] = "red"
-};
+    colors[2] = "red";
+}
+
 function update() {
-    onG ? (hDown ? (ph = 10, fDown && (y += 10, fDown = !1)) : (ph = 20, fDown && (y -= 10, fDown = !1)), xv *= .8) : yv += grav;
-    yv > ys && (yv = ys);
-    !hDown && hLeft != hRight && onG && (hLeft && --xv, hRight && (xv += 1));
+    if(onG) {
+        if(hDown) {
+            ph = 10;
+            if(fDown) {
+                y += 10;
+                fDown = false;
+            }
+        } else {
+            ph = 20;
+            if(fDown) {
+                y -= 10;
+                fDown = false;
+            }
+        }
+        xv *= 0.8;
+    } else {
+        yv += grav;
+    }
+    if(yv > ys) {
+        yv = ys;
+    }
+    if(!hDown) {
+        if(hLeft != hRight && onG) {
+            if(hLeft) {
+                xv -= 1;
+            }
+            if(hRight) {
+                xv += 1;
+            }
+        }
+    }
     x += xv;
     y += yv;
+
     c.fillStyle = "black";
     c.fillRect(0, 0, w, h);
-    onG = !1;
-    for (var b in plat)if (plat.hasOwnProperty(b)) {
-        var a = plat[b];
-        x + pw > a.x && x < a.x + a.w && y + ph >= a.y && y + ph <= a.y + yv && (onG = !0, y = a.y - ph, yv = 0);
-        switch (a.t) {
-            case 0:
-                x + pw > a.x && x < a.x + a.w && y > a.y + a.h + yv && y < a.y + a.h && (yv = 0, y = a.y + a.h);
-                y + ph >= a.y && y <= a.y + a.h && (x + pw >= a.x && x + pw <= a.x + xv ? (xv = 0, x = a.x - pw) : x >= a.x + a.w + xv && x <= a.x + a.w && (xv = 0, x = a.x + a.w));
-                break;
-            case 2:
-                x + pw > a.x && x < a.x + a.w && (y + ph >= a.y && y + ph <= a.y + yv ? (pw = ph = 0, dead = !0) : y > a.y + a.h + yv && y < a.y + a.h && (pw = ph = 0, dead = !0)), y + ph >= a.y && y <= a.y + a.h && (x + pw >= a.x && x + pw <= a.x + xv ? (pw = ph = 0, dead = !0) : x >= a.x + a.w + xv && x <= a.x + a.w && (pw = ph = 0, dead = !0))
+
+    onG = false;
+    for (let p in plat) {
+        if (plat.hasOwnProperty(p)) {
+            let q = plat[p];
+
+            if(x + pw > q.x && x < q.x + q.w) {
+                if(y + ph >= q.y && y + ph <= q.y + yv) {
+                    onG = true;
+                    y = q.y - ph;
+                    yv = 0;
+                }
+            }
+
+            switch (q.t) {
+                case 0:
+                    if(x + pw > q.x && x < q.x + q.w) {
+                        if(y > q.y + q.h + yv && y < q.y + q.h) {
+                            yv = 0;
+                            y = q.y + q.h;
+                        }
+                    }
+                    if(y + ph >= q.y && y <= q.y + q.h) {
+                        if(x + pw >= q.x && x + pw <= q.x + xv) {
+                            xv = 0;
+                            x = q.x - pw;
+                        } else if(x >= q.x + q.w + xv && x <= q.x + q.w) {
+                            xv = 0;
+                            x = q.x + q.w;
+                        }
+                    }
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    if(x + pw > q.x && x < q.x + q.w) {
+                        if(y + ph >= q.y && y + ph <= q.y + yv) {
+                            ph = 0;
+                            pw = 0;
+                            dead = true;
+                        } else if(y > q.y + q.h + yv && y < q.y + q.h) {
+                            ph = 0;
+                            pw = 0;
+                            dead = true;
+                        }
+                    }
+                    if(y + ph >= q.y && y <= q.y + q.h) {
+                        if(x + pw >= q.x && x + pw <= q.x + xv) {
+                            ph = 0;
+                            pw = 0;
+                            dead = true;
+                        } else if(x >= q.x + q.w + xv && x <= q.x + q.w) {
+                            ph = 0;
+                            pw = 0;
+                            dead = true;
+                        }
+                    }
+                    break;
+            }
+
+            c.fillStyle = colors[q.t];
+            c.fillRect(q.x, q.y, q.w, q.h);
         }
-        c.fillStyle = colors[a.t];
-        c.fillRect(a.x, a.y, a.w, a.h)
     }
+
     c.fillStyle = "blue";
-    c.fillRect(x, y, pw, ph)
+    c.fillRect(x, y, pw, ph);
 }
-function keyDown(b) {
-    switch (b.keyCode) {
+
+function keyDown(e) {
+    switch (e.keyCode) {
         case 37:
-            hLeft = !0;
+            hLeft = true;
             break;
         case 38:
-            onG && (yv = -ys);
-            grav = .45;
+            if(onG) {
+                yv = -ys;
+            }
+            grav = 0.45;
             break;
         case 39:
-            hRight = !0;
+            hRight = true;
             break;
         case 40:
-            hDown || (fDown = hDown = !0)
+            if(!hDown) {
+                hDown = true;
+                fDown = true;
+            }
+            break;
     }
 }
-function keyUp(b) {
-    switch (b.keyCode) {
+
+function keyUp(e) {
+    switch (e.keyCode) {
         case 37:
-            hLeft = !1;
+            hLeft = false;
             break;
         case 38:
-            grav = .6;
+            grav = defG;
             break;
         case 39:
-            hRight = !1;
+            hRight = false;
             break;
         case 40:
-            hDown = !1, fDown = !0
+            hDown = false;
+            fDown = true;
+            break;
     }
-};
+}

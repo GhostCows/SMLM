@@ -5,7 +5,8 @@ import br.senai.sc.engine.Fps;
 import java.awt.*;
 
 public class Sprite extends ZImage {
-	private static final double GRAVITY = SMLM.TILE_SIZE * 10;
+	protected int tileSize = SMLM.TILE_SIZE;
+	protected static final double GRAVITY = SMLM.TILE_SIZE * 10;
 
 	protected double x;
 	protected double y;
@@ -15,24 +16,55 @@ public class Sprite extends ZImage {
 	protected int h;
 	protected Fps fps;
 
-	public Sprite(Fps fps, String path, double x, double y) {
+	private boolean onGround;
+
+	private Map map;
+
+	public Sprite(Map map, Fps fps, String path, double x, double y) {
 		super(path);
 		this.x = x;
 		this.y = y;
 		this.w = getWidth();
 		this.h = getHeight();
 		this.fps = fps;
+		this.map = map;
 	}
 
-	public void run(Map map) {
+	public void run() {
 		yv += GRAVITY / 30;
 		x += xv / 30;
 		y += yv / 30;
 
-		// Collision
+		if (onGround()) {
+			yv = 0;
+			y = Math.floor(y / tileSize) * tileSize;
+		}
 
-		
+	}
 
+	public boolean onGround() {
+		int minX = (int) Math.floor(x / tileSize);
+		int maxX = (int) Math.floor((x + w) / tileSize);
+
+		int minY = (int) Math.floor(y / tileSize);
+		int maxY = (int) Math.floor((y + h) / tileSize);
+
+		for (int i = minX; i <= maxX; i++) {
+			for (int j = minY; j <= maxY; j++) {
+
+				if (map.get(j, i) != null) {
+					if (x + w > i * tileSize && x < (i + 1) * tileSize) {
+						if (y + h >= j * tileSize && y + h <= j * tileSize + yv) {
+
+							onGround = true;
+
+						}
+					}
+				}
+			}
+		}
+
+		return onGround;
 	}
 
 	public int colliding(Sprite spr) {

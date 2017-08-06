@@ -22,7 +22,7 @@ public class SMLM extends Game {
 			TileMap tMap = new TileMap(TILE_SIZE, "images/tileTest1.png");
 			map = new Map(tMap, 16, 6);
 			map.setLevel("levels/level1.json");
-			c = new Character(fps, "images/character.png", 0, 0, 3);
+			c = new Character(map, fps, "images/character.png", 32, 32, 3);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

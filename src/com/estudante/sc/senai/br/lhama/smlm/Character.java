@@ -10,8 +10,8 @@ public class Character extends Sprite {
 	private boolean jumping;
 	private boolean onGround;
 
-	public Character(Fps fps, String path, double x, double y, int jumpHeight) {
-		super(fps, path, x, y);
+	public Character(Map map, Fps fps, String path, double x, double y, int jumpHeight) {
+		super(map, fps, path, x, y);
 		this.jumpHeight = jumpHeight;
 	}
 
