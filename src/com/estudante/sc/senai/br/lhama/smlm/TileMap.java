@@ -1,31 +1,24 @@
 package com.estudante.sc.senai.br.lhama.smlm;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 import java.awt.*;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class TileMap extends ZImage {
 
 	private int tileSize;
 
-	public TileMap(int tileSize, String path) throws Exception {
+	private JSONArray array;
+
+	public TileMap(int tileSize, String path, String frictionPath) throws Exception {
 		super(path);
 		setTileSize(tileSize);
-	}
-
-	public TileMap(int tileSize, URI path) throws Exception {
-		super(path);
-		setTileSize(tileSize);
-	}
-
-	public TileMap(int tileSize, URL path) throws Exception {
-		super(path);
-		setTileSize(tileSize);
-	}
-
-	public TileMap(int tileSize, Image img) throws Exception {
-		super(img);
-		setTileSize(tileSize);
+		array = (JSONArray) JSONValue.parse(ZFile.readFile(frictionPath));
 	}
 
 	public int getTileSize() {
@@ -43,7 +36,8 @@ public class TileMap extends ZImage {
 	public Tile getTile(int x, int y) {
 		int x1 = tileSize * x;
 		int y1 = tileSize * y;
-		return new Tile(crop(x1, y1, x1 + tileSize, y1 + tileSize));
+
+		return new Tile(crop(x1, y1, x1 + tileSize, y1 + tileSize), (JSONObject) ((JSONArray) array.get(x)).get(y));
 	}
 
 

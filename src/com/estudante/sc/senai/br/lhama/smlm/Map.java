@@ -38,28 +38,20 @@ public class Map {
 
 	public void setLevel(String path) throws Exception {
 
-		InputStream is = getClass().getClassLoader().getResourceAsStream(path);
-
-		Scanner s = new Scanner(is).useDelimiter("\\A");
-		String json = s.hasNext() ? s.next() : "";
-
-		System.out.println(json);
-
-//		int[][][] ints = new int[][][]{{{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, {{1, 1}, {0, 0}, {0, 1}, {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}}};
+		String json = ZFile.readFile(path);
 
 		JSONArray array = (JSONArray) JSONValue.parse(json);
-
 
 		map = new ArrayList<>(height);
 
 		for (int i = 0; i < array.size(); i++) {
-			map.add(new ArrayList<>(width));
 			JSONArray row = (JSONArray) array.get(i);
+			map.add(new ArrayList<>(width));
 			for (int j = 0; j < row.size(); j++) {
 				JSONArray col = (JSONArray) row.get(j);
-				if (((Long) col.get(0)) != -1) {
+				try {
 					map.get(i).add(tMap.getTile(((Long) col.get(0)).intValue(), ((Long) col.get(1)).intValue()));
-				} else {
+				} catch (Exception e) {
 					map.get(i).add(null);
 				}
 			}
@@ -74,7 +66,7 @@ public class Map {
 			for (int j = 0; j < row.size(); j++) {
 				Tile col = row.get(j);
 				if (col != null) {
-					col.draw(g2d, j * tileSize, i * tileSize);
+					col.draw(g2d, i * tileSize, j * tileSize);
 				}
 			}
 		}

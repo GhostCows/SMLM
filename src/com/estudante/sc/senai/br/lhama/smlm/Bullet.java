@@ -5,8 +5,8 @@ import br.senai.sc.engine.Fps;
 import java.awt.*;
 
 public class Bullet extends Sprite {
-	public Bullet(Map map, Fps fps, String path, double x, double y, double xv, double yv) {
-		super(map, fps, path, x, y);
+	public Bullet(Map map, Fps fps, String path, double maxSpeed, double x, double y, double xv, double yv) {
+		super(map, fps, path, maxSpeed, x, y);
 		this.xv = xv;
 		this.yv = yv;
 	}

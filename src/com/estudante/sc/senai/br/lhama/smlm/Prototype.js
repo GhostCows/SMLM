@@ -39,7 +39,7 @@ window.onload = () => {
     colors[0] = "white";
     colors[1] = "lime";
     colors[2] = "red";
-}
+};
 
 function update() {
     if(onG) {
@@ -92,23 +92,25 @@ function update() {
                 }
             }
 
+            if(x + pw > q.x && x < q.x + q.w) {
+                if(y > q.y + q.h + yv && y < q.y + q.h) {
+                    yv = 0;
+                    y = q.y + q.h;
+                }
+            }
+            if(y + ph >= q.y && y <= q.y + q.h) {
+                if(x + pw >= q.x && x + pw <= q.x + xv) {
+                    xv = 0;
+                    x = q.x - pw;
+                } else if(x >= q.x + q.w + xv && x <= q.x + q.w) {
+                    xv = 0;
+                    x = q.x + q.w;
+                }
+            }
+
             switch (q.t) {
                 case 0:
-                    if(x + pw > q.x && x < q.x + q.w) {
-                        if(y > q.y + q.h + yv && y < q.y + q.h) {
-                            yv = 0;
-                            y = q.y + q.h;
-                        }
-                    }
-                    if(y + ph >= q.y && y <= q.y + q.h) {
-                        if(x + pw >= q.x && x + pw <= q.x + xv) {
-                            xv = 0;
-                            x = q.x - pw;
-                        } else if(x >= q.x + q.w + xv && x <= q.x + q.w) {
-                            xv = 0;
-                            x = q.x + q.w;
-                        }
-                    }
+
                     break;
                 case 1:
                     break;

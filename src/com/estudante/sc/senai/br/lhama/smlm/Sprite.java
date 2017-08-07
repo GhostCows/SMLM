@@ -8,6 +8,8 @@ public class Sprite extends ZImage {
 	protected int tileSize = SMLM.TILE_SIZE;
 	protected static final double GRAVITY = SMLM.TILE_SIZE * 10;
 
+	protected Collision collision;
+
 	protected double x;
 	protected double y;
 	protected double xv;
@@ -16,11 +18,13 @@ public class Sprite extends ZImage {
 	protected int h;
 	protected Fps fps;
 
-	private boolean onGround;
+	protected double maxFall;
+
+	protected double maxSpeed;
 
 	private Map map;
 
-	public Sprite(Map map, Fps fps, String path, double x, double y) {
+	public Sprite(Map map, Fps fps, String path, double maxSpeed, double x, double y) {
 		super(path);
 		this.x = x;
 		this.y = y;
@@ -28,43 +32,41 @@ public class Sprite extends ZImage {
 		this.h = getHeight();
 		this.fps = fps;
 		this.map = map;
+		this.maxSpeed = Math.abs(maxSpeed);
 	}
 
 	public void run() {
-		yv += GRAVITY / 30;
-		x += xv / 30;
-		y += yv / 30;
 
-		if (onGround()) {
+		x += xv;
+		y += yv;
+
+		colliding();
+
+		yv += GRAVITY / 900;
+
+		if(collision.top()) {
+			yv = 0;
+			y = Math.ceil(y / tileSize) * tileSize;
+		}
+
+		if (collision.bottom()) {
 			yv = 0;
 			y = Math.floor(y / tileSize) * tileSize;
+			xv *= 0.8;
 		}
 
-	}
-
-	public boolean onGround() {
-		int minX = (int) Math.floor(x / tileSize);
-		int maxX = (int) Math.floor((x + w) / tileSize);
-
-		int minY = (int) Math.floor(y / tileSize);
-		int maxY = (int) Math.floor((y + h) / tileSize);
-
-		for (int i = minX; i <= maxX; i++) {
-			for (int j = minY; j <= maxY; j++) {
-
-				if (map.get(j, i) != null) {
-					if (x + w > i * tileSize && x < (i + 1) * tileSize) {
-						if (y + h >= j * tileSize && y + h <= j * tileSize + yv) {
-
-							onGround = true;
-
-						}
-					}
-				}
-			}
+		if(collision.left()) {
+			xv = 0;
+			x = Math.floor(x / tileSize) * tileSize;
 		}
 
-		return onGround;
+		if(collision.right()) {
+			xv = 0;
+			x = Math.ceil(x / tileSize) * tileSize;
+		}
+
+		xv = Math.signum(xv) * Math.min(Math.abs(xv), maxSpeed);
+
 	}
 
 	public int colliding(Sprite spr) {
@@ -82,6 +84,59 @@ public class Sprite extends ZImage {
 		}
 
 		return num;
+
+	}
+
+	public Collision colliding() {
+
+		collision = new Collision(0);
+
+		int minX = (int) Math.max(Math.floor(x / tileSize), 0);
+		int maxX = (int) Math.min(Math.floor((x + w) / tileSize), SMLM.WIDTH / tileSize - 1);
+
+		int minY = (int) Math.max(Math.floor(y / tileSize), 0);
+		int maxY = (int) Math.min(Math.floor((y + h) / tileSize), SMLM.HEIGHT / tileSize - 1);
+
+		int yv = (int) Math.floor(this.yv);
+
+		for (int i = minX; i <= maxX; i++) {
+			for (int j = minY; j <= maxY; j++) {
+				if (map.get(i, j) != null) {
+
+					int x0 = i * tileSize;
+					int x1 = (i + 1) * tileSize;
+					int y0 = j * tileSize;
+					int y1 = (j + 1) * tileSize;
+
+					if (x + w > x0 && x < x1) {
+						if (y >= y1 + yv && y <= y1) {
+
+							collision.top(true);
+
+						}
+						if (y + h >= y0 && y + h <= y0 + yv + 1) {
+
+							collision.bottom(true);
+
+						}
+					}
+					if (y + h > y0 && y < y1) {
+						if (x + w >= x0 && x + w <= x0 + xv) {
+
+							collision.left(true);
+
+						}
+						if (x >= x1 + xv && x <= x1) {
+
+							collision.right(true);
+
+						}
+					}
+				}
+			}
+		}
+
+		return collision;
 
 	}
 

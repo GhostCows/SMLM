@@ -7,24 +7,71 @@ import java.awt.*;
 public class Character extends Sprite {
 
 	private int jumpHeight;
-	private boolean jumping;
-	private boolean onGround;
+	private boolean up;
+	private boolean down;
+	private boolean left;
+	private boolean right;
 
-	public Character(Map map, Fps fps, String path, double x, double y, int jumpHeight) {
-		super(map, fps, path, x, y);
+	public Character(Map map, Fps fps, String path, double maxSpeed, double x, double y, int jumpHeight) {
+		super(map, fps, path, maxSpeed, x, y);
 		this.jumpHeight = jumpHeight;
 	}
 
-	public void jump() {
+	@Override
+	public void run() {
 
-		yv = -30;
+
+		if (left != right) {
+			if (left) {
+				xv -= tileSize / 30;
+			} else {
+				xv += tileSize / 30;
+			}
+		}
+
+		super.run();
+
+		if (collision.bottom()) {
+			if (up) {
+				double t = 1;
+				yv = -Math.sqrt(2 * GRAVITY * tileSize * jumpHeight) / 30;//-jumpHeight * GRAVITY / 120;
+			}
+		} else {
+			xv = Math.signum(xv) * Math.min(Math.abs(xv), 0.8 * tileSize / (30 - 30 * 0.8));
+		}
 
 	}
 
-	/*@Override
-	public void run() {
+	public boolean up() {
+		return up;
+	}
 
-		super.run();
-	}?*/
+	public void up(boolean up) {
+		this.up = up;
+	}
+
+	public boolean down() {
+		return down;
+	}
+
+	public void down(boolean down) {
+		this.down = down;
+	}
+
+	public boolean left() {
+		return left;
+	}
+
+	public void left(boolean left) {
+		this.left = left;
+	}
+
+	public boolean right() {
+		return right;
+	}
+
+	public void right(boolean right) {
+		this.right = right;
+	}
 
 }
