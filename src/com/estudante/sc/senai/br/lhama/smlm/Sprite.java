@@ -87,6 +87,7 @@ public class Sprite extends ZImage {
 
 	}
 
+	@Deprecated
 	public Collision colliding() {
 
 		collision = new Collision(0);

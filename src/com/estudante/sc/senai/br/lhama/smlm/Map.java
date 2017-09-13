@@ -96,4 +96,12 @@ public class Map {
 
 	}
 
+	public Collision colliding(Sprite spr) {
+		Collision col = new Collision(0);
+
+
+
+		return col;
+	}
+
 }
