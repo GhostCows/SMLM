@@ -27,7 +27,7 @@ public class SMLM extends Game {
 		try {
 			TileMap tMap = new TileMap(TILE_SIZE, "tilemaps/tilemap1.png", "tilemaps/tilemap1.json");
 			map = new Map(tMap, 16, 6);
-			map.setLevel("levels/level1.json");
+			map.setLevel(1, 16, 6);
 			c = new Character(map, fps, "images/character.png", 256, 32, 32, 3);
 		} catch (Exception e) {
 			e.printStackTrace();

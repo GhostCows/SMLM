@@ -1,11 +1,14 @@
 package com.estudante.sc.senai.br.lhama.smlm;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -17,7 +20,9 @@ public class Map {
 	private int width;
 	private int height;
 	private TileMap tMap;
+	private ArrayList<HashMap<String, Long>> cols;
 	private ArrayList<ArrayList<Tile>> map;
+	private JSONObject obj;
 
 	public Map(TileMap tMap, int width, int height) {
 
@@ -29,31 +34,49 @@ public class Map {
 	}
 
 	public Tile get(int x, int y) {
-		return map.get(x).get(y);
+		return map.get(y).get(x);
 	}
 
 	public void set(int x, int y, Tile t) {
-		map.get(x).set(y, t);
+		map.get(y).set(x, t);
 	}
 
-	public void setLevel(String path) throws Exception {
+	public void setLevel(int levelNumber, int width, int height) throws Exception {
 
-		String json = ZFile.readFile(path);
+		String level = ZFile.readFile("levels/level" + levelNumber + ".json");
+		String cols = ZFile.readFile("levels/colision" + levelNumber + ".json");
 
-		JSONArray array = (JSONArray) JSONValue.parse(json);
+		JSONArray array1 = (JSONArray) JSONValue.parse(level);
+		JSONArray array2 = (JSONArray) JSONValue.parse(cols);
 
-		map = new ArrayList<>(height);
+		map = new ArrayList<>(width);
+		this.cols = new ArrayList<>(array2.size());
 
-		for (int i = 0; i < array.size(); i++) {
-			JSONArray row = (JSONArray) array.get(i);
+		for (int i = 0; i < height; i++) {
 			map.add(new ArrayList<>(width));
-			for (int j = 0; j < row.size(); j++) {
-				JSONArray col = (JSONArray) row.get(j);
+			for (int j = 0; j < width; j++) {
+				JSONArray row = (JSONArray) array1.get(i);
 				try {
+					JSONArray col = (JSONArray) row.get(j);
 					map.get(i).add(tMap.getTile(((Long) col.get(0)).intValue(), ((Long) col.get(1)).intValue()));
 				} catch (Exception e) {
 					map.get(i).add(null);
 				}
+			}
+		}
+
+		for (Object object : array2) {
+			try {
+				JSONObject obj = (JSONObject) object;
+				HashMap<String, Long> ob = new HashMap<>();
+				for (Object o : obj.keySet()) {
+					if(o instanceof String) {
+						ob.put((String) o, (Long) obj.get(o));
+					}
+				}
+				this.cols.add(ob);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -66,7 +89,7 @@ public class Map {
 			for (int j = 0; j < row.size(); j++) {
 				Tile col = row.get(j);
 				if (col != null) {
-					col.draw(g2d, i * tileSize, j * tileSize);
+					col.draw(g2d, j * tileSize, i * tileSize);
 				}
 			}
 		}
