@@ -6,6 +6,7 @@ import org.json.simple.JSONValue;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -95,13 +96,4 @@ public class Map {
 		}
 
 	}
-
-	public Collision colliding(Sprite spr) {
-		Collision col = new Collision(0);
-
-
-
-		return col;
-	}
-
 }

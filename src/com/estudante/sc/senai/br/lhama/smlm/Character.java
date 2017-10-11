@@ -20,7 +20,6 @@ public class Character extends Sprite {
 	@Override
 	public void run() {
 
-
 		if (left != right) {
 			if (left) {
 				xv -= tileSize / 30;
@@ -33,7 +32,6 @@ public class Character extends Sprite {
 
 		if (collision.bottom()) {
 			if (up) {
-				double t = 1;
 				yv = -Math.sqrt(2 * GRAVITY * tileSize * jumpHeight) / 30;//-jumpHeight * GRAVITY / 120;
 			}
 		} else {

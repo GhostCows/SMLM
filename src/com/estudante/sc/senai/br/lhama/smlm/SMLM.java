@@ -4,6 +4,8 @@ import br.senai.sc.engine.Game;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class SMLM extends Game {
@@ -13,9 +15,14 @@ public class SMLM extends Game {
 	private Map map;
 	private Character c;
 
+	private ZPoint mouse;
+	private boolean mouseClick;
+
 	public SMLM(String nomeJogo, int width, int height) {
 		super(nomeJogo, width, height);
 		addKeyListener(new KeyboardHandler());
+		addMouseListener(new MouseHadler());
+		addMouseMotionListener(new MouseHadler());
 	}
 
 	public static void main(String[] args) {
@@ -24,6 +31,7 @@ public class SMLM extends Game {
 
 	@Override
 	public void init() {
+		mouse = new ZPoint(0,0);
 		try {
 			TileMap tMap = new TileMap(TILE_SIZE, "tilemaps/tilemap1.png", "tilemaps/tilemap1.json");
 			map = new Map(tMap, 16, 6);
@@ -44,6 +52,7 @@ public class SMLM extends Game {
 		map.draw(g2d);
 		c.run();
 		c.draw(g2d);
+		System.out.println(fps.getFps());
 	}
 
 	private class KeyboardHandler extends KeyAdapter {
@@ -96,6 +105,25 @@ public class SMLM extends Game {
 					c.right(false);
 					break;
 			}
+		}
+	}
+
+	private class MouseHadler extends MouseAdapter {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			mouseClick = true;
+//			System.out.println("EI");
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			mouseClick = false;
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			mouse.x = e.getX();
+			mouse.y = e.getY();
 		}
 	}
 

@@ -37,23 +37,18 @@ public class Sprite extends ZImage {
 
 	public void run() {
 
+		collide();
+
+		xv = Math.signum(xv) * Math.min(Math.abs(xv), maxSpeed);
+		yv += GRAVITY / Math.pow(fps.getTargetFps(), 2);
+		yv = Math.min(Math.abs(yv), 100);
+
+	}
+
+	public void collide() {
 		x += xv;
-		y += yv;
 
 		colliding();
-
-		yv += GRAVITY / 900;
-
-		if(collision.top()) {
-			yv = 0;
-			y = Math.ceil(y / tileSize) * tileSize;
-		}
-
-		if (collision.bottom()) {
-			yv = 0;
-			y = Math.floor(y / tileSize) * tileSize;
-			xv *= 0.8;
-		}
 
 		if(collision.left()) {
 			xv = 0;
@@ -65,8 +60,20 @@ public class Sprite extends ZImage {
 			x = Math.ceil(x / tileSize) * tileSize;
 		}
 
-		xv = Math.signum(xv) * Math.min(Math.abs(xv), maxSpeed);
+		y += yv;
 
+		colliding();
+
+		if(collision.top()) {
+			yv = 0;
+			y = Math.ceil(y / tileSize) * tileSize;
+		}
+
+		if (collision.bottom()) {
+			yv = 0;
+			y = Math.floor(y / tileSize) * tileSize;
+			xv *= 0.8;
+		}
 	}
 
 	public int colliding(Sprite spr) {
@@ -87,7 +94,6 @@ public class Sprite extends ZImage {
 
 	}
 
-	@Deprecated
 	public Collision colliding() {
 
 		collision = new Collision(0);
@@ -142,6 +148,6 @@ public class Sprite extends ZImage {
 	}
 
 	public void draw(Graphics2D g2d) {
-		g2d.drawImage(image, (int) Math.floor(x), (int) Math.floor(y), null);
+		g2d.drawImage(getImage(), (int) Math.floor(x), (int) Math.floor(y), null);
 	}
 }
