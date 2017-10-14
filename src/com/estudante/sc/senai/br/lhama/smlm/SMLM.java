@@ -33,9 +33,7 @@ public class SMLM extends Game {
 	public void init() {
 		mouse = new ZPoint(0,0);
 		try {
-			TileMap tMap = new TileMap(TILE_SIZE, "tilemaps/tilemap1.png", "tilemaps/tilemap1.json");
-			map = new Map(tMap, 16, 6);
-			map.setLevel(1, 16, 6);
+			map = new Map("levels/level1.csv", "tilemaps/tilemap1", 64);
 			c = new Character(map, fps, "images/character.png", 256, 32, 32, 3);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -52,7 +50,7 @@ public class SMLM extends Game {
 		map.draw(g2d);
 		c.run();
 		c.draw(g2d);
-		System.out.println(fps.getFps());
+		System.out.println(fps.getFrameRate());
 	}
 
 	private class KeyboardHandler extends KeyAdapter {
@@ -82,9 +80,6 @@ public class SMLM extends Game {
 					c.y = 64;
 					c.xv = 0;
 					c.yv = 0;
-					System.out.println(c.x);
-					System.out.println(c.y);
-					System.out.println("hi");
 					break;
 			}
 		}
@@ -112,7 +107,6 @@ public class SMLM extends Game {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			mouseClick = true;
-//			System.out.println("EI");
 		}
 
 		@Override

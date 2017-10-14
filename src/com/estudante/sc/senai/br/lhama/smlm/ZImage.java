@@ -61,7 +61,6 @@ public class ZImage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(rect);
 		rect.setW(image.getWidth(null));
 		rect.setH(image.getHeight(null));
 	}

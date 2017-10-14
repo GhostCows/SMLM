@@ -7,23 +7,24 @@ public class Fps {
 	private int fps;
 	private long lastFPSMs;
 	private boolean pause;
+	private double frameRate;
+	private long deltaTime;
 
 	public Fps() {
-		this.optimalTime = (long)(1000 / this.targetFps);
-		this.getDelta();
-		this.lastFPSMs = this.getTime();
+		optimalTime = (long) (1000 / this.targetFps);
+		updateDelta();
+		lastFPSMs = getTime();
 	}
 
 	public Fps(int fps) {
-		this.optimalTime = (long)(1000 / this.targetFps);
-		this.targetFps = fps;
-		this.optimalTime = (long)(1000 / this.targetFps);
-		this.getDelta();
-		this.lastFPSMs = this.getTime();
+		targetFps = fps;
+		optimalTime = (long) (1000 / this.targetFps);
+		updateDelta();
+		lastFPSMs = getTime();
 	}
 
 	public int getTargetFps() {
-		return this.targetFps;
+		return targetFps;
 	}
 
 	public void setTargetFps(int targetFps) {
@@ -31,7 +32,7 @@ public class Fps {
 	}
 
 	public long getOptimalTime() {
-		return this.optimalTime;
+		return optimalTime;
 	}
 
 	public void setOptimalTime(long optimalTime) {
@@ -39,7 +40,7 @@ public class Fps {
 	}
 
 	public long getLastFrameTime() {
-		return this.lastFrameTime;
+		return lastFrameTime;
 	}
 
 	public void setLastFrameTime(long lastFrameTime) {
@@ -50,12 +51,16 @@ public class Fps {
 		return this.fps;
 	}
 
+	public double getFrameRate() {
+		return frameRate;
+	}
+
 	public void setFps(int fps) {
 		this.fps = fps;
 	}
 
 	public long getLastFPSMs() {
-		return this.lastFPSMs;
+		return lastFPSMs;
 	}
 
 	public void setLastFPSMs(long lastFPSMs) {
@@ -63,36 +68,44 @@ public class Fps {
 	}
 
 	public long getTime() {
-		return System.nanoTime() / 1000000L;
+		return System.nanoTime() / 1000000;
 	}
 
-	public int getDelta() {
-		long time = this.getTime();
-		int delta = (int)(time - this.lastFrameTime);
-		this.lastFrameTime = time;
-		return delta;
+	public void updateDelta() {
+		long time = getTime();
+		deltaTime = (int) (time - lastFrameTime);
+		lastFrameTime = time;
+	}
+
+	public long getDelta() {
+		return deltaTime;
 	}
 
 	public void updateFPS() {
-		if(this.lastFPSMs > 1000L) {
-			this.fps = 0;
-			this.lastFPSMs = 0L;
+		updateDelta();
+		frameRate = 1000D / (double) deltaTime;
+
+		if (lastFPSMs > 1000) {
+			fps = 0;
+			lastFPSMs = 0;
 		}
 
-		this.lastFPSMs += (long)this.getDelta();
+		lastFPSMs += deltaTime;
 		++this.fps;
 	}
 
 	public void synchronize(boolean p) {
-		if(p) {
+		if (p) {
 			while (pause) {
 				System.out.print("");
 			}
 		}
-		long ms = this.lastFrameTime - this.getTime() + this.optimalTime;
+
+		deltaTime = lastFrameTime - getTime();
+		long ms = deltaTime + optimalTime;
 
 		try {
-			if(ms > 0L) {
+			if (ms > 0L) {
 				Thread.sleep(ms);
 			}
 		} catch (InterruptedException var4) {

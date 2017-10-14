@@ -18,8 +18,6 @@ public class Sprite extends ZImage {
 	protected int h;
 	protected Fps fps;
 
-	protected double maxFall;
-
 	protected double maxSpeed;
 
 	private Map map;
@@ -148,6 +146,6 @@ public class Sprite extends ZImage {
 	}
 
 	public void draw(Graphics2D g2d) {
-		g2d.drawImage(getImage(), (int) Math.floor(x), (int) Math.floor(y), null);
+		draw(g2d, (int) Math.floor(x), (int) Math.floor(y));
 	}
 }

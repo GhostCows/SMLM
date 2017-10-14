@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 public abstract class Game extends Canvas {
 	private static final long serialVersionUID = 6058040659371962305L;
+	private static final int TARGET_FRAMERATE = 60;
 	protected JFrame container;
 	private JPanel panel;
 	protected BufferStrategy strategy;
@@ -42,9 +43,9 @@ public abstract class Game extends Canvas {
 				System.exit(0);
 			}
 		});
-		fps = new Fps();
-		musicas = new HashMap();
-		customFonts = new HashMap();
+		fps = new Fps(TARGET_FRAMERATE);
+		musicas = new HashMap<>();
+		customFonts = new HashMap<>();
 		init();
 		container.setVisible(true);
 		requestFocus();
@@ -71,7 +72,7 @@ public abstract class Game extends Canvas {
 				System.exit(0);
 			}
 		});
-		fps = new Fps();
+		fps = new Fps(TARGET_FRAMERATE);
 		musicas = new HashMap<>();
 		customFonts = new HashMap<>();
 		cursors = new HashMap<>();

@@ -1,99 +1,75 @@
 package com.estudante.sc.senai.br.lhama.smlm;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import java.awt.*;
-import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.Arrays;
 
 /**
- * Created by Marcelo Vogt on 04/08/2017.
+ * Created by Marcelo Vogt on 12/10/2017.
  */
 public class Map {
 
-	private int tileSize;
-	private int width;
-	private int height;
-	private TileMap tMap;
-	private ArrayList<HashMap<String, Long>> cols;
-	private ArrayList<ArrayList<Tile>> map;
-	private JSONObject obj;
+	private ArrayList<ArrayList<Tile>> tiles;
+	private TileMap tileMap;
+	private Sprite[] sprites;
 
-	public Map(TileMap tMap, int width, int height) {
-
-		this.tMap = tMap;
-		this.tileSize = tMap.getTileSize();
-		this.width = width;
-		this.height = height;
-
+	public Map(String levelPath, String tilemapPath, int tileSize) {
+		try {
+			tileMap = new TileMap(tilemapPath, tileSize);
+			importLevel(levelPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public Tile get(int x, int y) {
-		return map.get(y).get(x);
-	}
+	private void importLevel(String path) throws Exception {
+		tiles = new ArrayList<>();
+		String content = ZFile.readFile(path);
 
-	public void set(int x, int y, Tile t) {
-		map.get(y).set(x, t);
-	}
+		ArrayList<String> rows = new ArrayList<>(
+				Arrays.asList(content.split("\r\n"))
+		);
 
-	public void setLevel(int levelNumber, int width, int height) throws Exception {
+		for (int i = 0; i < rows.size(); i++) {
+			String row = rows.get(i);
 
-		String level = ZFile.readFile("levels/level" + levelNumber + ".json");
-		String cols = ZFile.readFile("levels/colision" + levelNumber + ".json");
+			ArrayList<String> ts = new ArrayList<>(
+					Arrays.asList(row.split(","))
+			);
 
-		JSONArray array1 = (JSONArray) JSONValue.parse(level);
-		JSONArray array2 = (JSONArray) JSONValue.parse(cols);
+			tiles.add(i, new ArrayList<>());
 
-		map = new ArrayList<>(width);
-		this.cols = new ArrayList<>(array2.size());
+			for (int j = 0; j < ts.size(); j++) {
+				String t = ts.get(j);
 
-		for (int i = 0; i < height; i++) {
-			map.add(new ArrayList<>(width));
-			for (int j = 0; j < width; j++) {
-				JSONArray row = (JSONArray) array1.get(i);
+				Tile tile = null;
 				try {
-					JSONArray col = (JSONArray) row.get(j);
-					map.get(i).add(tMap.getTile(((Long) col.get(0)).intValue(), ((Long) col.get(1)).intValue()));
-				} catch (Exception e) {
-					map.get(i).add(null);
-				}
-			}
-		}
+					int index = Integer.parseInt(t);
+					tile = tileMap.get(index);
 
-		for (Object object : array2) {
-			try {
-				JSONObject obj = (JSONObject) object;
-				HashMap<String, Long> ob = new HashMap<>();
-				for (Object o : obj.keySet()) {
-					if(o instanceof String) {
-						ob.put((String) o, (Long) obj.get(o));
+					if(tile != null) {
+						tile.setPos(j, i);
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				this.cols.add(ob);
-			} catch (Exception e) {
-				e.printStackTrace();
+
+				tiles.get(i).add(j, tile);
 			}
 		}
-
 	}
 
 	public void draw(Graphics2D g2d) {
-
-		for (int i = 0; i < map.size(); i++) {
-			ArrayList<Tile> row = map.get(i);
-			for (int j = 0; j < row.size(); j++) {
-				Tile col = row.get(j);
-				if (col != null) {
-					col.draw(g2d, j * tileSize, i * tileSize);
+		for (ArrayList<Tile> rows : tiles) {
+			for (Tile tile : rows) {
+				if(tile != null) {
+					tile.draw(g2d);
 				}
 			}
 		}
+	}
 
+	public Tile get(int x, int y) {
+		return tileMap.get(x, y);
 	}
 }

@@ -1,44 +1,51 @@
 package com.estudante.sc.senai.br.lhama.smlm;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
-import java.awt.*;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 
 public class TileMap extends ZImage {
 
-	private int tileSize;
-
 	private JSONArray array;
+	private int tileSize;
+	private int cols;
+	private int rows;
 
-	public TileMap(int tileSize, String path, String frictionPath) throws Exception {
-		super(path);
-		setTileSize(tileSize);
-		array = (JSONArray) JSONValue.parse(ZFile.readFile(frictionPath));
+	public TileMap(String path, int tileSize) throws Exception {
+		super(path.concat(".png"));
+		array = (JSONArray) ZFile.readJSON(path.concat(".json"));
+		this.tileSize = tileSize;
+		if (getWidth() % tileSize != 0 || getHeight() % tileSize != 0)
+			throw new Exception("Invalid image or tile size");
+		cols = getWidth() / tileSize;
+		rows = getHeight() / tileSize;
+	}
+
+	public Tile get(int x, int y) {
+		return new Tile(this, x, y);
+	}
+
+	public Tile get(int index) {
+		if (index == -1) {
+			return null;
+		}
+		return get(
+				Math.floorMod(index, cols),
+				Math.floorDiv(index, cols)
+		);
+	}
+
+	public int getCols() {
+		return cols;
+	}
+
+	public int getRows() {
+		return rows;
 	}
 
 	public int getTileSize() {
 		return tileSize;
 	}
 
-	public void setTileSize(int tileSize) throws Exception {
-		if(getWidth() % tileSize == 0 && getHeight() % tileSize == 0) {
-			this.tileSize = tileSize;
-		} else {
-			throw new Exception("Invalid tile size");
-		}
+	public int getSize() {
+		return tileSize;
 	}
-
-	public Tile getTile(int x, int y) {
-		int x1 = tileSize * x;
-		int y1 = tileSize * y;
-
-		return new Tile(crop(x1, y1, x1 + tileSize, y1 + tileSize), (JSONObject) ((JSONArray) array.get(x)).get(y));
-	}
-
-
 }
