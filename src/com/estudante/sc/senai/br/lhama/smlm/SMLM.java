@@ -33,8 +33,8 @@ public class SMLM extends Game {
 	public void init() {
 		mouse = new ZPoint(0,0);
 		try {
-			map = new Map("levels/level1.csv", "tilemaps/tilemap1", 64);
-			c = new Character(map, fps, "images/character.png", 256, 32, 32, 3);
+			map = new Map("levels/level1", "tilemaps/tilemap1", 64);
+//			c = new Character(map, fps, "images/character.png", 256, 32, 32, 3);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -42,15 +42,10 @@ public class SMLM extends Game {
 	}
 
 	@Override
-	public void aposTermino() {
-	}
-
-	@Override
 	public void gameLoop() {
 		map.draw(g2d);
-		c.run();
-		c.draw(g2d);
-		System.out.println(fps.getFrameRate());
+//		c.run();
+//		c.draw(g2d);
 	}
 
 	private class KeyboardHandler extends KeyAdapter {
@@ -64,22 +59,22 @@ public class SMLM extends Game {
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
 				case KeyEvent.VK_UP:
-					c.up(true);
+//					c.up(true);
 					break;
 				case KeyEvent.VK_DOWN:
-					c.down(true);
+//					c.down(true);
 					break;
 				case KeyEvent.VK_LEFT:
-					c.left(true);
+//					c.left(true);
 					break;
 				case KeyEvent.VK_RIGHT:
-					c.right(true);
+//					c.right(true);
 					break;
 				case KeyEvent.VK_R:
-					c.x = 64;
-					c.y = 64;
-					c.xv = 0;
-					c.yv = 0;
+//					c.x = 64;
+//					c.y = 64;
+//					c.xv = 0;
+//					c.yv = 0;
 					break;
 			}
 		}
@@ -88,16 +83,16 @@ public class SMLM extends Game {
 		public void keyReleased(KeyEvent e) {
 			switch (e.getKeyCode()) {
 				case KeyEvent.VK_UP:
-					c.up(false);
+//					c.up(false);
 					break;
 				case KeyEvent.VK_DOWN:
-					c.down(false);
+//					c.down(false);
 					break;
 				case KeyEvent.VK_LEFT:
-					c.left(false);
+//					c.left(false);
 					break;
 				case KeyEvent.VK_RIGHT:
-					c.right(false);
+//					c.right(false);
 					break;
 			}
 		}

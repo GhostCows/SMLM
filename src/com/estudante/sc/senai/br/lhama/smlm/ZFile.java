@@ -7,6 +7,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class ZFile {
 
-	public static String readFile(String path) throws Exception {
+	public static String readFile(String path) throws InvalidPathException {
 
 		InputStream is = ZFile.class.getClassLoader().getResourceAsStream(path);
 
@@ -27,7 +28,7 @@ public class ZFile {
 
 	}
 
-	public static void writeFile(String path, String content) throws Exception {
+	public static void writeFile(String path, String content) throws FileNotFoundException, UnsupportedEncodingException {
 		PrintWriter writer = new PrintWriter(path, "UTF-8");
 		writer.print(content);
 		writer.close();

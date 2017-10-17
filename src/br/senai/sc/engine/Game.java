@@ -154,7 +154,7 @@ public abstract class Game extends Canvas {
 		gameRunning = false;
 	}
 
-	public abstract void aposTermino();
+	public void aposTermino() {}
 
 	public abstract void gameLoop();
 
