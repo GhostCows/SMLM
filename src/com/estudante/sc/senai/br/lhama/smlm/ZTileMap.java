@@ -31,7 +31,7 @@ public class ZTileMap extends ZImage {
 	}
 
 	public ZTileMap(String path, int tileSize) {
-		super(path);
+		super(path.concat(".png"));
 
 		if(getWidth() % tileSize != 0 || getHeight() % tileSize != 0) {
 			throw new InvalidParameterException("Parameters given are invalid");

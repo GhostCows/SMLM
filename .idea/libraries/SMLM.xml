@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SMLM">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/test/SMLM/json-simple-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/test/SMLM/commons-io-2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/test/SMLM/jl1.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -14,6 +14,7 @@ public class Map {
 	private ArrayList<Sprite> sprites;
 	private int tileSize;
 	private ArrayList<ArrayList<ZTile>> tiles;
+	private int state = 0;
 
 	public Map(String levelName, String tilemapName, int tileSize) {
 		try {
@@ -27,13 +28,12 @@ public class Map {
 
 	private void importLevel(String levelName) throws Exception {
 
-
 		loadTiles(levelName.concat(".csv"));
 
-		loadSprites(levelName.concat("sprites.csv"));
+		loadLevelSprites(levelName.concat("sprites.csv"));
 	}
 
-	private void loadSprites(String path) throws InvalidPathException {
+	private void loadLevelSprites(String path) throws InvalidPathException {
 		sprites = new ArrayList<>();
 		String content = ZFile.readFile(path);
 
@@ -48,21 +48,12 @@ public class Map {
 					Arrays.asList(row.split(","))
 			);
 
-			if()
-
-			tiles.add(i, new ArrayList<>());
-
 			for (int j = 0; j < ts.size(); j++) {
 				String t = ts.get(j);
 
-				ZTile tile = null;
-				int index = Integer.parseInt(t);
-
-				if(index != -1) {
-					tile = tileMap.get(index);
+				if(!t.equals("-1")) {
+//					sprites.add(CARREGAR O SPRITE);
 				}
-
-				tiles.get(i).add(j, tile);
 			}
 		}
 	}
